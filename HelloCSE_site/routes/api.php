@@ -16,6 +16,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::put('/profile/{profile}', [ProfileController::class, 'update']);
+    Route::delete('/profile/{profile}', [ProfileController::class, 'delete']);
     Route::post('/profile', [ProfileController::class, 'store']);
     Route::get('/test', function (Request $request) {
         return response()->json(['ok' => true,'user' => $request->user(),]);
