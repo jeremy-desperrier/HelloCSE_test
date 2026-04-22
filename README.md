@@ -2,11 +2,6 @@
 Projet Laravel 11 réalisé dans le cadre du test technique de l’entreprise HelloCSE.
 
 # Test technique
-
-Ce test a vocation à évaluer les compétences techniques et le savoir-faire sur la technologie.  
-La qualité du test sera l’aspect le plus important dans ce rendu. Toute prise d’initiative supplémentaire sera évidemment prise en compte.  
-En cas de doute sur certains points de ce test, ne pas hésiter à nous contacter à it@hellocse.fr  
-
 ---
 
 ## Objectif
