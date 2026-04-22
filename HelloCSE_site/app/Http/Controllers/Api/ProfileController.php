@@ -5,14 +5,32 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormRequestStoreProfile;
 use App\Http\Requests\FormRequestUpdateProfile;
+use App\Http\Resources\AdminProfileResource;
+use App\Http\Resources\PublicProfileResource;
 use App\Models\Profile;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
 
 
 class ProfileController extends Controller
 {
+
+    public function indexPublic(): AnonymousResourceCollection
+    {
+        $profiles = Profile::where('statut', 'actif')->latest()->get();
+
+        return PublicProfileResource::collection($profiles);
+    }
+
+    public function indexAdmin(): AnonymousResourceCollection
+    {
+        $profiles = Profile::latest()->get();
+
+        return AdminProfileResource::collection($profiles);
+    }
+
     public function store(FormRequestStoreProfile $request)
     {
         $path = $request->file('image')->store('profiles', 'public');
