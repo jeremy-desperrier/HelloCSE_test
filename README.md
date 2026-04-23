@@ -34,3 +34,24 @@ Ces profils possèderont les champs suivants :
 - Les données doivent être typées et validées (FormRequest)
 - L’utilisation de seeders, factories, tests unitaires est un plus
 - N’hésitez pas à commenter votre code et créer des commits sur Git au fur et à mesure de votre progression
+
+
+# Démarage
+
+## ⚙️ Installation
+composer install
+cp .env.example .env
+php artisan key:generate
+
+### Configurer la base de données dans le fichier .env, puis exécuter :
+
+php artisan migrate --seed
+php artisan storage:link
+php artisan serve
+
+## 🔐 Accès administrateur
+
+Un utilisateur administrateur est automatiquement créé via les seeders :
+
+Email : admin@hellocse.test
+Mot de passe : password
