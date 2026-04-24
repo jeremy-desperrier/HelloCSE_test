@@ -27,7 +27,8 @@ class SetupDatabase extends Command
      */
     public function handle()
     {
-        //pour éviter un bug au lancement de la commande la premiere fois car la bdd n'est pas encore creer
+        // en fin de compte pas besoin avec les seeder je supprime
+        /*//pour éviter un bug au lancement de la commande la premiere fois car la bdd n'est pas encore creer
         $host = env('DB_HOST', '127.0.0.1');
         $port = env('DB_PORT', '3306');
         $database = env('DB_DATABASE');
@@ -53,6 +54,6 @@ class SetupDatabase extends Command
             $this->error('Database setup failed: ' . $e->getMessage());
 
             return Command::FAILURE;
-        }
+        }*/
     }
 }

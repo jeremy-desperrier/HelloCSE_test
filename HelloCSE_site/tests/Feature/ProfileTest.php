@@ -12,8 +12,7 @@ use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
-    // j'ai rencontrer quelques problèmes avec le refresh qui ne fonctionnais pas correctement  entre les differents test.
-    // d'ou l'ajout du .env.testing qui vide la base entre chaque lancement des tests.
+    
     use RefreshDatabase;
 
     public function test_public_route_returns_only_active_profiles_without_status(): void
