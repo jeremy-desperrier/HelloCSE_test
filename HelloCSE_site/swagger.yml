@@ -1,0 +1,383 @@
+openapi: 3.0.3
+
+info:
+  title: HelloCSE Test API
+  version: 1.0.0
+  description: |
+    API Laravel 11 réalisée dans le cadre du test technique HelloCSE.
+
+servers:
+  - url: http://127.0.0.1:8000/api
+    description: Serveur local
+
+tags:
+  - name: Routes publiques
+    description: Endpoints accessibles sans authentification.
+  - name: Routes privées
+    description: Endpoints accessibles uniquement avec authentification.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Token
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Admin
+        email:
+          type: string
+          format: email
+          example: admin@hellocse.test
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@hellocse.test
+        password:
+          type: string
+          example: password
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Connexion réussie.
+        token:
+          type: string
+          example: 1|xxxxxxxxxxxxxxxxxxxxxxxx
+        user:
+          $ref: '#/components/schemas/User'
+
+    LogoutResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Déconnexion réussie.
+
+    PublicProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nom:
+          type: string
+          example: Dupont
+        prenom:
+          type: string
+          example: Jean
+        image:
+          type: string
+          example: profiles/mon-image.jpg
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    AdminProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nom:
+          type: string
+          example: Dupont
+        prenom:
+          type: string
+          example: Jean
+        image:
+          type: string
+          example: profiles/mon-image.jpg
+        statut:
+          type: string
+          enum:
+            - inactif
+            - en_attente
+            - actif
+          example: actif
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StoreProfileRequest:
+      type: object
+      required:
+        - nom
+        - prenom
+        - image
+        - statut
+      properties:
+        nom:
+          type: string
+          example: Dupont
+        prenom:
+          type: string
+          example: Jean
+        image:
+          type: string
+          format: binary
+        statut:
+          type: string
+          enum:
+            - inactif
+            - en_attente
+            - actif
+          example: actif
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        nom:
+          type: string
+          example: Dupont
+        prenom:
+          type: string
+          example: Jean
+        image:
+          type: string
+          format: binary
+        statut:
+          type: string
+          enum:
+            - inactif
+            - en_attente
+            - actif
+          example: en_attente
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Opération effectuée avec succès.
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The given data was invalid.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+paths:
+  #################################################################
+  # ROUTES PUBLIQUES
+  #################################################################
+
+  /login:
+    post:
+      tags:
+        - Routes publiques
+      summary: Connexion administrateur
+      description: Permet à un administrateur de se connecter et de récupérer son token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '422':
+          description: Erreur de validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /profiles:
+    get:
+      tags:
+        - Routes publiques
+      summary: Liste publique des profils actifs
+      description: Retourne uniquement les profils ayant le statut actif, sans le champ statut.
+      responses:
+        '200':
+          description: Liste des profils publics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicProfile'
+
+  #################################################################
+  # ROUTES PRIVÉES
+  #################################################################
+
+  /logout:
+    post:
+      tags:
+        - Routes privées
+      summary: Déconnexion administrateur
+      description: Supprime le token courant de l'administrateur connecté.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Déconnexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutResponse'
+        '401':
+          description: Non authentifié
+
+  /profiles/list:
+    get:
+      tags:
+        - Routes privées
+      summary: Liste complète des profils
+      description: Retourne tous les profils.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Liste complète des profils
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminProfile'
+        '401':
+          description: Non authentifié
+
+  /profile/create:
+    post:
+      tags:
+        - Routes privées
+      summary: Créer un profil
+      description: Crée un nouveau profil.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StoreProfileRequest'
+      responses:
+        '201':
+          description: Profil créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProfile'
+        '401':
+          description: Non authentifié
+        '422':
+          description: Erreur de validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /profile/{id}:
+    put:
+      tags:
+        - Routes privées
+      summary: Modifier un profil
+      description: Modifie un profil existant.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identifiant du profil
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profil mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProfile'
+        '401':
+          description: Non authentifié
+        '404':
+          description: Profil introuvable
+        '422':
+          description: Erreur de validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    delete:
+      tags:
+        - Routes privées
+      summary: Supprimer un profil
+      description: Supprime un profil existant.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identifiant du profil
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Profil supprimé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Non authentifié
+        '404':
+          description: Profil introuvable
