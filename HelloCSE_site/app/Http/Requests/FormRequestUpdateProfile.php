@@ -22,8 +22,8 @@ class FormRequestUpdateProfile extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['sometimes', 'string', 'max:255'],
-            'prenom' => ['sometimes', 'string', 'max:255'],
+            'nom' => ['sometimes', 'string', 'max:100'],
+            'prenom' => ['sometimes', 'string', 'max:50'],
             'image' => ['sometimes', 'file', 'image', 'max:2048'],
             'statut' => ['sometimes', 'in:inactif,en_attente,actif'],
         ];
