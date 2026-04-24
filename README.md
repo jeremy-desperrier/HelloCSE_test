@@ -43,7 +43,16 @@ composer install
 cp .env.example .env
 php artisan key:generate
 
-### Configurer la base de données dans le fichier .env, puis exécuter :
+### Configurer la base de données dans le fichier .env
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=HelloCSE_jeremy_DESPERRIER
+DB_USERNAME= !! à changer en fonction de vos besoin
+DB_PASSWORD= !! à changer en fonction de vos besoin
+
+#### puis exécuter :
 
 php artisan migrate --seed
 php artisan storage:link
